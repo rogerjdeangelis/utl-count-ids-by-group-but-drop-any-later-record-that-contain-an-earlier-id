@@ -1,5 +1,4 @@
 # utl-count-ids-by-group-but-drop-any-later-record-that-contain-an-earlier-id
-Count ids by group but drop any later record that contain an earlier id
     %let pgm=utl-count-ids-by-group-but-drop-any-later-record-that-contain-an-earlier-id;
 
     %stop_submission;
@@ -25,6 +24,8 @@ Count ids by group but drop any later record that contain an earlier id
         1 sas sql with partiioning
         2 r sql with partitioning
         3 python with partitioning
+        4 nice sort freq by
+          Nat Wooding <nathani@VERIZON.NET>
 
     github
     https://tinyurl.com/y8d693v2
@@ -138,6 +139,20 @@ Count ids by group but drop any later record that contain an earlier id
     /*                              |                                                        |                                */
     /*                              | proc print data=sd1.pywant;                            |                                */
     /*                              | run;quit;                                              |                                */
+    /*                              |                                                        |                                */
+    /*                              |-----------------------------------------------------------------------------------------*/
+    /*                              |                                                        |                                */
+    /*                              | 4 SAS SORT FREQ                                        | SAS                            */
+    /*                              | ==========================                             |    DATE       CNT              */
+    /*                              |                                                        |                                */
+    /*                              | Proc sort data =sd1.have nodupkey;                     | 2020-02-07     3               */
+    /*                              |  by id;                                                | 2020-02-14     2               */
+    /*                              | run;quit;                                              |                                */
+    /*                              |                                                        |                                */
+    /*                              | proc freq noprint;                                     |                                */
+    /*                              | table date /                                           |                                */
+    /*                              |  Out= want (keep = date count);                        |                                */
+    /*                              | run;                                                   |                                */
     /**************************************************************************************************************************/
 
     /*                   _
@@ -311,6 +326,31 @@ Count ids by group but drop any later record that contain an earlier id
     /*  1 2020-02-14   2  | 2020-02-14     2                                                                                  */
     /**************************************************************************************************************************/
 
+    /*  _                                    _      __
+    | || |    ___  __ _ ___   ___  ___  _ __| |_   / _|_ __ ___  __ _
+    | || |_  / __|/ _` / __| / __|/ _ \| `__| __| | |_| `__/ _ \/ _` |
+    |__   _| \__ \ (_| \__ \ \__ \ (_) | |  | |_  |  _| | |  __/ (_| |
+       |_|   |___/\__,_|___/ |___/\___/|_|   \__| |_| |_|  \___|\__, |
+                                                                   |_|
+    */
+
+    Proc sort data =sd1.have nodupkey;
+     by id;
+    run;quit;
+
+    proc freq noprint;
+    table date /
+     Out= want (keep = date count);
+    run;
+
+    /**************************************************************************************************************************/
+    /*|    DATE       COUNT                                                                                                   */
+    /*|                                                                                                                       */
+    /*| 2020-02-07      3                                                                                                     */
+    /*| 2020-02-14      2                                                                                                     */
+    /**************************************************************************************************************************/
+
+
     /*              _
       ___ _ __   __| |
      / _ \ `_ \ / _` |
@@ -318,3 +358,4 @@ Count ids by group but drop any later record that contain an earlier id
      \___|_| |_|\__,_|
 
     */
+
